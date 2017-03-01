@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       ">
+	
+	<!-- conf库数据源 -->
+	<bean id="common-dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		<property name="driverClass">
+			<value>${o2pCommon.jdbcDriver}</value>
+		</property>
+		<property name="jdbcUrl">
+			<value>${o2pCommon.database}</value>
+		</property>
+		<property name="user">
+			<value>${o2pCommon.user}</value>
+		</property>
+		<property name="password">
+			<value>${o2pCommon.password}</value>
+		</property>
+		<property name="maxPoolSize">
+			<value>${o2pCommon.maxIdle}</value>
+		</property>
+		<property name="minPoolSize">
+			<value>${o2pCommon.minIdle}</value>
+		</property>
+		<property name="initialPoolSize">
+			<value>${o2pCommon.initialSize}</value>
+		</property>
+		<property name="acquireRetryDelay">
+			<value>${o2pCommon.maxWait}</value>
+		</property>
+		<property name="breakAfterAcquireFailure">
+			<value>${o2pCommon.breakAfterAcquireFailure}</value>
+		</property>
+		<property name="testConnectionOnCheckout">
+			<value>${o2pCommon.testConnectionOnCheckout}</value>
+		</property>
+		<property name="testConnectionOnCheckin">
+			<value>${o2pCommon.testConnectionOnCheckin}</value>
+		</property>
+		<property name="idleConnectionTestPeriod">
+			<value>${o2pCommon.idleConnectionTestPeriod}</value>
+		</property>
+		<property name="acquireRetryAttempts">
+			<value>${o2pCommon.acquireRetryAttempts}</value>
+		</property>
+	</bean>
+	
+	<!-- 日志库数据源 -->
+	<bean id="dep-dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		<property name="driverClass">
+			<value>${driverClassName}</value>
+		</property>
+		<property name="jdbcUrl">
+			<value>${dep_db_url}</value>
+		</property>
+		<property name="user">
+			<value>${dep_db_username}</value>
+		</property>
+		<property name="password">
+			<value>${dep_db_password}</value>
+		</property>
+		<property name="minPoolSize">
+			<value>1</value>
+		</property>
+		<property name="maxPoolSize">
+			<value>${db_maxActive}</value>
+		</property>
+		<property name="maxIdleTime">
+			<value>1800</value>
+		</property>
+		<property name="acquireIncrement">
+			<value>2</value>
+		</property>
+		<property name="maxStatements">
+			<value>0</value>
+		</property>
+		<property name="initialPoolSize">
+			<value>${o2pCommon.initialSize}</value>
+		</property>
+		<property name="testConnectionOnCheckout">
+			<value>${o2pCommon.testConnectionOnCheckout}</value>
+		</property>
+		<property name="testConnectionOnCheckin">
+			<value>${o2pCommon.testConnectionOnCheckin}</value>
+		</property>
+		<property name="breakAfterAcquireFailure">
+			<value>${o2pCommon.breakAfterAcquireFailure}</value>
+		</property>
+		<property name="idleConnectionTestPeriod">
+			<value>${o2pCommon.idleConnectionTestPeriod}</value>
+		</property>
+		<property name="acquireRetryAttempts">
+			<value>${o2pCommon.acquireRetryAttempts}</value>
+		</property>
+		<property name="acquireRetryDelay">
+			<value>${o2pCommon.maxWait}</value>
+		</property>
+	</bean>
+	
+	<bean id="smSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="configLocation" value="classpath:mybatis-config.xml"/> 
+		<property name="dataSource" ref="common-dataSource" />
+		<property name="mapperLocations">
+			<list>
+				<value>classpath:ibatis/model/o2p-base-migration-sqlmap.xml</value>
+				<value>classpath:ibatis/model/o2p-dao-migration-sqlmap.xml</value>
+			</list>
+		</property>
+		<property name="plugins">
+			<array>
+				<ref bean="pagePlugin"/>
+			</array>
+		</property>
+		<property name="databaseIdProvider" ref="databaseIdProvider"></property>
+		<property name="typeAliasesPackage" value="com.asiainfo.integretion.o2p.servicemigration.common.typeHandlers,com.asiainfo.integretion.o2p.servicemigration.dao.mapper"></property>
+	</bean>
+	
+	<bean id="depSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="configLocation" value="classpath:mybatis-config.xml"/>
+		<property name="dataSource" ref="dep-dataSource" />
+		<property name="plugins">
+			<array>
+				<ref bean="pagePlugin"/>
+			</array>
+		</property>
+		<property name="databaseIdProvider" ref="databaseIdProvider"></property>
+		<property name="typeAliasesPackage" value="com.asiainfo.integretion.o2p.servicemigration.common.typeHandlers,com.asiainfo.integretion.o2p.servicemigration.dao.mapper"></property>
+	</bean>
+	
+	<bean id="databaseIdProvider" class="org.apache.ibatis.mapping.VendorDatabaseIdProvider">
+		<property name="properties" ref="vendorProperties"></property>
+	</bean>
+	
+	<bean id="vendorProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+	    <property name="properties">
+	      <props>
+	        <prop key="Oracle">oracle</prop>
+	        <prop key="MySQL">mysql</prop>
+	      </props>
+	    </property>
+	 </bean>
+	
+	<bean id="pagePlugin" class="com.asiainfo.integretion.o2p.servicemigration.dao.common.PageInterceptor">
+		<property name="dialect" value="${databaseType}"></property>
+		<property name="pageSqlId" value=".*(Page|PAGE)$"></property>
+	</bean>
+
+	<!-- 配置扫描器 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.asiainfo.integretion.o2p.servicemigration.dao.mapper" />
+		<property name="sqlSessionFactoryBeanName" value="smSqlSessionFactory" />
+	</bean>
+	
+	<!-- 配置扫描器 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.asiainfo.integretion.o2p.servicemigration.dao.logmapper" />
+		<property name="sqlSessionFactoryBeanName" value="depSqlSessionFactory" />
+	</bean>
+</beans>

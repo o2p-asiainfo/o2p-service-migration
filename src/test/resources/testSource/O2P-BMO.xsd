@@ -1,0 +1,995 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2013 (http://www.altova.com) by  () -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="0.1">
+	<xs:element name="serviceObject" type="serviceObjectType"/>
+	<xs:complexType name="serviceObjectType">
+		<xs:sequence>
+			<xs:element name="services" type="servicesType"/>
+			<xs:element name="components" type="componentsType" minOccurs="0"/>
+			<xs:element name="contractFormats" type="contractFormatsType" minOccurs="0"/>
+			<xs:element name="nodeDesces" type="nodeDescesType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--业务-->
+	<xs:complexType name="servicesType">
+		<xs:sequence>
+			<xs:element name="service" type="serviceType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="serviceType">
+		<xs:sequence>
+			<xs:element name="serviceCode" type="codeType"/>
+			<xs:element name="style">
+				<!--1.rest 2.webservice 3.file-->
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="1"/>
+						<xs:enumeration value="2"/>
+						<xs:enumeration value="3"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="name" type="xs:string"/>
+			<xs:element name="apis" type="apisType"/>
+			<xs:element name="createDate" type="xs:dateTime" minOccurs="0"/>
+			<xs:element name="modifyDate" type="xs:dateTime" minOccurs="0"/>
+			<xs:element name="description" type="xs:string" minOccurs="0"/>
+			<xs:element ref="status"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--组件-->
+	<xs:element name="comsumerComponent" type="componentType"/>
+	<xs:element name="producerComponent" type="componentType"/>
+	<xs:complexType name="componentsType">
+		<xs:sequence>
+			<xs:element name="component" type="componentType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="componentType">
+		<xs:sequence>
+			<xs:element name="componentCode" type="codeType"/>
+			<xs:element name="name" type="xs:string"/>
+			<xs:choice>
+				<xs:element name="orgCode" type="codeType"/>
+				<xs:element name="org" type="orgType"/>
+			</xs:choice>
+			<xs:element name="type">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Operational IT System"/>
+						<xs:enumeration value="App Application"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="apps" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="app" type="app" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element ref="status"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--APP-->
+	<xs:complexType name="app">
+		<xs:sequence>
+			<xs:element name="summary" type="xs:string" minOccurs="0"/>
+			<xs:element name="url" type="xs:string" minOccurs="0"/>
+			<xs:element name="type">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Mobile Applications"/>
+						<xs:enumeration value="Website"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="oauthType" type="xs:string" minOccurs="0"/>
+			<xs:element name="tokenEnabledTime" type="xs:int" minOccurs="0"/>
+			<xs:element name="appKey" type="xs:string" minOccurs="0"/>
+			<xs:element name="description" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--机构-->
+	<xs:element name="org" type="orgType"/>
+	<xs:complexType name="orgType">
+		<xs:sequence>
+			<xs:element name="orgCode" type="codeType"/>
+			<xs:element name="name" type="xs:string"/>
+			<xs:element ref="merchant" minOccurs="0"/>
+			<xs:element name="type" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Enterprise"/>
+						<xs:enumeration value="Personal"/>
+						<xs:enumeration value="Internal Organization"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="area" type="xs:string" minOccurs="0"/>
+			<xs:element name="roles" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="role" minOccurs="0" maxOccurs="unbounded">
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:enumeration value="Developer"/>
+									<xs:enumeration value="Provider"/>
+									<xs:enumeration value="Partner"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="username" type="xs:string" minOccurs="0"/>
+			<xs:element name="password" type="xs:string" minOccurs="0"/>
+			<xs:element name="idType" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="ID Card"/>
+						<xs:enumeration value="Business License"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="idNumber" type="xs:string" minOccurs="0"/>
+			<xs:element name="email" type="xs:string" minOccurs="0"/>
+			<xs:element name="contractNumber" type="xs:string" minOccurs="0"/>
+			<xs:element name="icon" type="xs:string" minOccurs="0"/>
+			<xs:element name="idScannedCopy" type="xs:string" minOccurs="0"/>
+			<xs:element name="description" type="xs:string" minOccurs="0"/>
+			<xs:element ref="status"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--商户，属性待扩展-->
+	<xs:element name="merchant" type="merchantType"/>
+	<xs:complexType name="merchantType">
+		<xs:sequence>
+			<xs:element name="merchantCode" type="codeType"/>
+			<xs:element name="name" type="xs:string"/>
+			<xs:element name="description" type="xs:string" minOccurs="0"/>
+			<xs:element ref="status"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--消息流-->
+	<xs:element name="messageFlow" type="messageFlowType"/>
+	<xs:complexType name="messageFlowType">
+		<xs:sequence>
+			<xs:element name="messageFlowCode" type="codeType"/>
+			<xs:element name="messageFlowName" type="xs:string"/>
+			<xs:element name="startEndpoint">
+				<xs:complexType>
+					<xs:choice>
+						<xs:element name="endpointCode" type="codeType"/>
+						<xs:element name="endpoint" type="endpointType"/>
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="createTime" type="xs:dateTime"/>
+			<xs:element name="serviceRouteConfigs">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="serviceRouteConfig" type="serviceRouteConfig" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="changeTime" type="xs:dateTime"/>
+			<xs:element name="description" type="xs:string" minOccurs="0"/>
+			<xs:element ref="status"/>
+			<xs:element name="endpoints" type="endpointsType" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--路由配置-->
+	<xs:complexType name="serviceRouteConfig">
+		<xs:sequence>
+			<xs:element name="serviceRouteConfigCode" type="xs:string"/>
+			<xs:element name="routePolicy" type="routePolicy"/>
+			<xs:element name="synAsyn" type="xs:string"/>
+			<xs:element name="srcEndpoint">
+				<xs:complexType>
+					<xs:choice>
+						<xs:element name="endpointCode" type="codeType"/>
+						<xs:element name="endpoint" type="endpointType"/>
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="tarEndpoint">
+				<xs:complexType>
+					<xs:choice>
+						<xs:element name="endpointCode" type="codeType"/>
+						<xs:element name="endpoint" type="endpointType"/>
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+			<xs:element ref="status"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--路由规则-->
+	<xs:complexType name="routePolicy">
+		<xs:sequence>
+			<xs:element name="routePolicyCode"/>
+			<xs:element name="routeCondition" type="routeCondition" minOccurs="0"/>
+			<xs:element name="ruleStrategyCode" type="codeType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--路由策略-->
+	<xs:complexType name="ruleStrategy">
+		<xs:sequence>
+			<xs:element name="ruleStrategyCode" type="codeType"/>
+			<xs:element name="ruleStrategyName" type="xs:string"/>
+			<xs:element name="ruleStrategyDesc" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--路由条件-->
+	<xs:complexType name="routeCondition">
+		<xs:sequence>
+			<xs:element name="routeConditionCode"/>
+			<xs:element name="upRouteCondition" type="routeCondition" minOccurs="0"/>
+			<xs:element name="operatorCode" type="codeType"/>
+			<xs:element name="getValueExpr" type="getValueExpr"/>
+			<xs:element name="matchValue" type="xs:string" minOccurs="0"/>
+			<xs:element name="condRelation" type="xs:string" minOccurs="0"/>
+			<xs:element name="routeConditionExpr" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--比较符-->
+	<xs:complexType name="comparisonOperator">
+		<xs:sequence>
+			<xs:element name="operatorCode" type="codeType"/>
+			<xs:element name="operatorName" type="xs:string"/>
+			<xs:element name="operatorDesc" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--取值表达式-->
+	<xs:complexType name="getValueExpr">
+		<xs:sequence>
+			<xs:element name="getValueExprCode"/>
+			<xs:element name="condEvaluatorCode" type="codeType"/>
+			<xs:element name="upGetValueExpr" type="getValueExpr" minOccurs="0"/>
+			<xs:element name="expr" type="xs:string"/>
+			<xs:element name="reqRsp" type="xs:string" minOccurs="0"/>
+			<xs:element name="exprType" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--表达式解析机制-->
+	<xs:complexType name="condEvaluator">
+		<xs:sequence>
+			<xs:element name="condEvaluatorCode" type="codeType"/>
+			<xs:element name="condEvaluatorName" type="xs:string"/>
+			<xs:element name="condEvaluatorDesc" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--端点-->
+	<xs:element name="endpoint" type="endpointType"/>
+	<xs:complexType name="endpointsType">
+		<xs:sequence>
+			<xs:element name="endpoint" type="endpointType" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="endpointType">
+		<xs:sequence>
+			<xs:element name="endpointCode" type="codeType"/>
+			<xs:element name="endpointSpec" type="endpointSpecType"/>
+			<xs:element name="endpointName" type="xs:string"/>
+			<xs:element name="inDataTypeCode" type="codeType"/>
+			<xs:element name="outDataTypeCode" type="codeType"/>
+			<xs:element name="inTrace" type="xs:string" minOccurs="0"/>
+			<xs:element name="inLog" type="xs:string" minOccurs="0"/>
+			<xs:element name="outLog" type="xs:string" minOccurs="0"/>
+			<xs:element ref="attrValues" minOccurs="0"/>
+			<xs:element name="endpointDesc" type="xs:string" minOccurs="0"/>
+			<xs:element ref="status"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--端点规格-->
+	<xs:complexType name="endpointSpecType">
+		<xs:sequence>
+			<xs:element name="endpointSpecCode" type="codeType"/>
+			<xs:choice minOccurs="0">
+				<xs:element name="technologyImplementCode" type="codeType"/>
+				<xs:element name="technologyImplement" type="technologyImplementType"/>
+				<xs:element name="transformer" type="transformer"/>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	<!--校验-->
+	<xs:complexType name="VALIDATE">
+		<xs:sequence>
+			<xs:element name="requestOrResponse" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--压缩解压-->
+	<xs:complexType name="ZIP_FILE">
+		<xs:sequence>
+			<xs:element name="tracingFlag" type="xs:string"/>
+			<xs:element name="dataLogFlag" type="xs:string"/>
+			<xs:element name="fileTargetPath" type="xs:string"/>
+			<xs:element name="zipTargetName" type="xs:string"/>
+			<xs:element name="zipType" type="xs:string"/>
+			<xs:element name="zipInvokedAction" type="xs:string"/>
+			<xs:element name="zipOrUnzip" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--接收-->
+	<xs:complexType name="FETCH_FILE">
+		<xs:sequence>
+			<xs:element name="tracingFlag" type="xs:string"/>
+			<xs:element name="dataLogFlag" type="xs:string"/>
+			<xs:element name="fileTargetPath" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--搬迁-->
+	<xs:complexType name="filemove">
+		<xs:sequence>
+			<xs:element name="backupFileDir" type="xs:string" minOccurs="0"/>
+			<xs:element name="remoteCallUrlId" type="xs:string" minOccurs="0"/>
+			<xs:element name="fileFormats" type="xs:string" minOccurs="0"/>
+			<xs:element name="fileDir" type="xs:string"/>
+			<xs:element name="fileDirType" type="xs:string"/>
+			<xs:element name="filePostReadAction" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--JDBC-->
+	<xs:complexType name="JDBC_INOUT">
+		<xs:sequence>
+			<xs:element name="tracingFlag" type="xs:string"/>
+			<xs:element name="dataLogFlag" type="xs:string"/>
+			<xs:element name="jdbcSql" type="xs:string"/>
+			<xs:element name="startLineIndex" type="xs:string" minOccurs="0"/>
+			<xs:element name="limit" type="xs:string" minOccurs="0"/>
+			<xs:element name="dataSourceId" type="xs:string"/>
+			<xs:element name="isExportCsv" type="xs:string" minOccurs="0"/>
+			<xs:element name="csvTemplateId" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--下载-->
+	<xs:complexType name="download">
+		<xs:sequence>
+			<xs:element name="fileDir" type="xs:string"/>
+			<xs:element name="fileDirType" type="xs:string"/>
+			<xs:element name="fileSortType" type="xs:string" minOccurs="0"/>
+			<xs:element name="fileDownloadLimitNum" type="xs:string" minOccurs="0"/>
+			<xs:element name="messageRule" type="xs:string" minOccurs="0"/>
+			<xs:element name="fileTempDir" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--分发-->
+	<xs:complexType name="filepublish">
+		<xs:sequence>
+			<xs:element name="remoteCallUrlId" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--订阅-->
+	<xs:complexType name="filesubscribe">
+		<xs:sequence>
+			<xs:element name="tracingFlag" type="xs:string"/>
+			<xs:element name="dataLogFlag" type="xs:string"/>
+			<xs:element name="fileNamePattern" type="xs:string"/>
+			<xs:element name="remoteCallUrlId" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--插件调用-->
+	<xs:complexType name="PLUGINS_CALL">
+		<xs:sequence>
+			<xs:element name="pluginsCallUrl" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--FLAT文件读取-->
+	<xs:complexType name="FLAT_FILE_READER">
+		<xs:sequence>
+			<xs:element name="tracingFlag" type="xs:string"/>
+			<xs:element name="dataLogFlag" type="xs:string"/>
+			<xs:element name="fileDir" type="xs:string"/>
+			<xs:element name="threadNumLimit" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--XML文件读取-->
+	<xs:complexType name="XML_FILE_READER">
+		<xs:sequence>
+			<xs:element name="tracingFlag" type="xs:string"/>
+			<xs:element name="dataLogFlag" type="xs:string"/>
+			<xs:element name="fileDir" type="xs:string"/>
+			<xs:element name="rootElementName" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--数据类型-->
+	<xs:complexType name="dataType">
+		<xs:sequence>
+			<xs:element name="dataTypeCode" type="codeType"/>
+			<xs:element name="dataTypeCode" type="codeType"/>
+			<xs:element name="dataTypeName" type="xs:string"/>
+			<xs:element name="dataTypeDesc" type="xs:string" minOccurs="0"/>
+			<xs:element ref="status"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--转换流程-->
+	<!--协议转换-->
+	<xs:complexType name="transformer">
+		<xs:sequence>
+			<xs:element name="transformerCode" type="codeType"/>
+			<xs:element name="sourceContractFormat" type="contractFormatType" minOccurs="0"/>
+			<xs:element name="targetContractFormat" type="contractFormatType" minOccurs="0"/>
+			<xs:element name="adapterName" type="xs:string" minOccurs="0"/>
+			<xs:element name="adapterType" type="xs:integer"/>
+			<xs:element name="scriptSrc" type="xs:string" minOccurs="0"/>
+			<xs:element name="nodeDescMapers" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="nodeDescMaper" type="nodeDescMaper" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="nodeValueAdapterReqs" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="nodeValueAdapterReq" type="nodeValueAdapterReq" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="variableMaps" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="variableMap" type="variableMap" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="contractAdapterEndpoints" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="contractAdapterEndpoint" minOccurs="0" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="contractAdapterEndpointCode"/>
+									<xs:element name="endpointCode" type="codeType"/>
+									<xs:element name="contractFormatCode"/>
+									<xs:element name="actionType"/>
+									<xs:element name="createDate" type="xs:dateTime"/>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="createDate" type="xs:dateTime" minOccurs="0"/>
+			<xs:element ref="status"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--协议版本-->
+	<xs:element name="contractVersion" type="contractVersionType"/>
+	<xs:complexType name="contractVersionType">
+		<xs:sequence>
+			<xs:element name="version" type="xs:string"/>
+			<xs:element name="checkFlag" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Y"/>
+						<xs:enumeration value="N"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="baseContractVersion" type="contractVersionType" minOccurs="0"/>
+			<xs:element ref="contract"/>
+			<xs:element ref="requestContractFormat"/>
+			<xs:element ref="responceContractFormat"/>
+			<xs:element ref="contractDocument" minOccurs="0"/>
+			<xs:element name="description" type="xs:string" minOccurs="0"/>
+			<xs:element ref="status"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--协议规格-->
+	<xs:element name="contract" type="contractType"/>
+	<xs:complexType name="contractType">
+		<xs:sequence>
+			<xs:element name="contractCode" type="codeType"/>
+			<xs:element name="name" type="xs:string"/>
+			<xs:element name="description" type="xs:string" minOccurs="0"/>
+			<xs:element ref="status"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--协议格式-->
+	<xs:element name="requestContractFormat" type="contractFormatType"/>
+	<xs:element name="responceContractFormat" type="contractFormatType"/>
+	<xs:complexType name="contractFormatsType">
+		<xs:sequence>
+			<xs:element name="contractFormat" type="contractFormatDetailType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="contractFormatType">
+		<xs:choice>
+			<xs:element name="contractFormatCode" type="codeType"/>
+			<xs:element name="contractFormat" type="contractFormatDetailType"/>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="contractFormatDetailType">
+		<xs:sequence>
+			<xs:element name="contractFormatCode" type="codeType"/>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="nodeDescCode" type="codeType"/>
+				<xs:element ref="nodeDesc"/>
+			</xs:choice>
+			<xs:element name="formatType">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="XML"/>
+						<xs:enumeration value="JSON"/>
+						<xs:enumeration value="URLGET"/>
+						<xs:enumeration value="FILE"/>
+						<xs:enumeration value="MAP"/>
+						<xs:enumeration value="XML/JSON"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element ref="attrValues" minOccurs="0"/>
+			<xs:element name="description" type="xs:string"/>
+			<xs:element ref="status"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--协议格式属性-->
+	<xs:complexType name="contract2AttrSpec">
+		<xs:sequence>
+			<xs:element name="contract2AttrSpecCode" type="codeType"/>
+			<xs:element ref="attrValues" minOccurs="0"/>
+			<xs:element name="value" type="xs:string"/>
+			<xs:element name="name" type="xs:string" minOccurs="0"/>
+			<xs:element name="createDate" type="xs:dateTime"/>
+			<xs:element ref="status"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--节点描述-->
+	<xs:element name="nodeDesc" type="nodeDescType"/>
+	<xs:complexType name="nodeDescesType">
+		<xs:sequence>
+			<xs:element name="nodeDesc" type="nodeDescType" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="nodeDescType">
+		<xs:sequence>
+			<xs:element name="nodeDescCode" type="codeType"/>
+			<xs:element name="childNodeDesces" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:choice minOccurs="0" maxOccurs="unbounded">
+							<xs:element name="childNodeDescCode" type="codeType"/>
+							<xs:element ref="nodeDesc"/>
+						</xs:choice>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="name" type="xs:string"/>
+			<xs:element name="code"/>
+			<xs:element name="nodePath" type="xs:string" minOccurs="0"/>
+			<xs:element name="type">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="header"/>
+						<xs:enumeration value="body"/>
+						<xs:enumeration value="tail"/>
+						<xs:enumeration value="url"/>
+						<xs:enumeration value="xml namespace"/>
+						<xs:enumeration value="property"/>
+						<xs:enumeration value="child nodes namespace"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="lengthCons" type="xs:string" minOccurs="0"/>
+			<xs:element name="countCons" type="xs:string"/>
+			<xs:element name="typeCons" type="xs:string"/>
+			<xs:element name="isSignature" type="xs:boolean"/>
+			<xs:element name="isCheck">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Y"/>
+						<xs:enumeration value="N"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="nodeValueConsType" type="xs:string"/>
+			<xs:element name="nodeValueConsExpressions" type="xs:string"/>
+			<xs:element name="javaField" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="apiname"/>
+						<xs:enumeration value="AppKey"/>
+						<xs:enumeration value="SrcSysCode"/>
+						<xs:enumeration value="ReqTime"/>
+						<xs:enumeration value="DstSysID"/>
+						<xs:enumeration value="Format"/>
+						<xs:enumeration value="TransactionID"/>
+						<xs:enumeration value="Method"/>
+						<xs:enumeration value="BusiCode"/>
+						<xs:enumeration value="AccessToken"/>
+						<xs:enumeration value="ServiceContractVer"/>
+						<xs:enumeration value="msgBody"/>
+						<xs:enumeration value="ip"/>
+						<xs:enumeration value="Sign"/>
+						<xs:enumeration value="ServiceCode"/>
+						<xs:enumeration value="servicename"/>
+						<xs:enumeration value="OperatorCode"/>
+						<xs:enumeration value="RspTime"/>
+						<xs:enumeration value="RspType"/>
+						<xs:enumeration value="RspCode"/>
+						<xs:enumeration value="RspDesc"/>
+						<xs:enumeration value="HTTPSTATUSCODE"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="fuzzy" type="xs:string" minOccurs="0"/>
+			<xs:element name="description" type="xs:string" minOccurs="0"/>
+			<xs:element ref="status"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--协议文档-->
+	<xs:element name="contractDocument" type="contractDocumentType"/>
+	<xs:complexType name="contractDocumentType">
+		<xs:sequence>
+			<xs:element name="baseContractDocument" type="contractDocumentType" minOccurs="0"/>
+			<xs:element name="name" type="xs:string"/>
+			<xs:element name="resourceAliss"/>
+			<xs:element name="version" type="xs:string"/>
+			<xs:choice>
+				<xs:element name="fileShare" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="fileShareCode"/>
+							<xs:element name="name"/>
+							<xs:element name="content"/>
+							<xs:element ref="status"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="fileShareCode" minOccurs="0"/>
+			</xs:choice>
+			<xs:element name="type" type="xs:string"/>
+			<xs:element ref="status"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--转换节点映射-->
+	<xs:complexType name="nodeDescMaper">
+		<xs:sequence>
+			<xs:element name="nodeDescMaperCode" type="codeType"/>
+			<xs:element name="sourceNodeDescCode" type="codeType" minOccurs="0"/>
+			<xs:element name="targetNodeDescCode" type="codeType"/>
+			<xs:element name="actionType">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="A"/>
+						<xs:enumeration value="M"/>
+						<xs:enumeration value="U"/>
+						<xs:enumeration value="R"/>
+						<xs:enumeration value="E"/>
+						<xs:enumeration value="J"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="createDate" type="xs:dateTime"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--节点取值要求-->
+	<xs:complexType name="nodeValueAdapterReq">
+		<xs:sequence>
+			<xs:element name="nodeValueAdapterReqCode" type="codeType"/>
+			<xs:element name="tarNodeDescCode" type="codeType"/>
+			<xs:element name="nodeValueSrouceType" type="xs:string"/>
+			<xs:element name="valueExpression" type="xs:string"/>
+			<xs:element name="script" type="xs:string" minOccurs="0"/>
+			<xs:element name="triggerExpression" type="xs:string" minOccurs="0"/>
+			<xs:element ref="status"/>
+			<xs:element name="createDate" type="xs:dateTime"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--转换与主数据-->
+	<xs:complexType name="transScript2Param">
+		<xs:sequence>
+			<xs:element name="transScript2ParamCode" type="codeType"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--变量映射-->
+	<xs:complexType name="variableMap">
+		<xs:sequence>
+			<xs:element name="variableMapCode" type="codeType"/>
+			<xs:element name="constantMappingTypeCode" type="codeType"/>
+			<xs:element name="dataSource" type="xs:string"/>
+			<xs:element name="keyExpression" type="xs:string"/>
+			<xs:element name="valueExpression" type="xs:string"/>
+			<xs:element name="version" type="xs:dateTime"/>
+			<xs:element ref="status"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--端点验证-->
+	<!--端点验证是服务对应的协议版本-->
+	<!--Call端点技术信息-->
+	<!--技术实现-->
+	<xs:element name="technologyImplement" type="technologyImplementType"/>
+	<xs:complexType name="technologyImplementType">
+		<xs:sequence>
+			<xs:element name="technologyImplementCode" type="codeType"/>
+			<xs:element name="producerComponentCode" type="codeType"/>
+			<xs:element name="name" type="xs:string"/>
+			<xs:element ref="attrValues" minOccurs="0"/>
+			<xs:element name="communicationPotocolCode">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="http-get"/>
+						<xs:enumeration value="rest"/>
+						<xs:enumeration value="jms"/>
+						<xs:enumeration value="http-post"/>
+						<xs:enumeration value="http-get-post"/>
+						<xs:enumeration value="sftp"/>
+						<xs:enumeration value="ftp"/>
+						<xs:enumeration value="webservice"/>
+						<xs:enumeration value="socket"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="technologyImplementFlowControls" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="technologyImplementFlowControl" type="technologyImplementFlowControlType" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element ref="status"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--技术实现控制策略-->
+	<xs:complexType name="technologyImplementationControlStrategy">
+		<xs:sequence>
+			<xs:element name="technologyImplementationControlStrategyCode" type="codeType"/>
+			<xs:element name="controlType" type="xs:string"/>
+			<xs:element name="controlStatus" type="xs:string"/>
+			<xs:element name="controlCycle" type="xs:string"/>
+			<xs:element name="controlCycleValue" type="xs:long"/>
+			<xs:element name="controlValue" type="xs:long"/>
+			<xs:element name="controlAction" type="xs:string"/>
+			<xs:element name="createTime" type="xs:dateTime"/>
+			<xs:element name="usealbeStatus" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--文件搬迁-->
+	<!--文件搬迁服务调用实例-->
+	<xs:complexType name="fileRelocationServiceInvocationInstance">
+		<xs:sequence>
+			<xs:element name="fileRelocationServiceInvocationInstanceCode" type="codeType"/>
+			<xs:element name="fileDirectory" type="fileDirectory"/>
+			<xs:element name="filefilterExpression" type="xs:string" minOccurs="0"/>
+			<xs:element name="batch" type="xs:string"/>
+			<xs:element name="fileCheck" type="xs:string"/>
+			<xs:element name="suffixFormat" type="xs:string" minOccurs="0"/>
+			<xs:element name="fileAlgorithm" type="xs:string" minOccurs="0"/>
+			<xs:element name="originalFileToDelete" type="xs:string"/>
+			<xs:element name="reqOrRsp" type="xs:string"/>
+			<xs:element name="createTime" type="xs:dateTime"/>
+			<xs:element ref="status"/>
+			<xs:element name="fileFormats" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--文件目录-->
+	<xs:complexType name="fileDirectory">
+		<xs:sequence>
+			<xs:element name="fileDirectoryCode" type="codeType"/>
+			<xs:element name="upDirectory" type="fileDirectory" minOccurs="0"/>
+			<xs:element name="remoteAuth" type="remoteHostAuthentication"/>
+			<xs:element name="directoryPath" type="xs:string"/>
+			<xs:element name="directoryType" type="xs:string"/>
+			<xs:element name="utlPath" type="xs:string" minOccurs="0"/>
+			<xs:element name="createTime" type="xs:dateTime"/>
+			<xs:element name="description" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--远程主机鉴权-->
+	<xs:complexType name="remoteHostAuthentication">
+		<xs:sequence>
+			<xs:element name="remoteHostAuthenticationCode" type="codeType"/>
+			<xs:element name="hostConfiguration" type="hostConfiguration" minOccurs="0"/>
+			<xs:element name="userName" type="xs:string"/>
+			<xs:element name="userPassword" type="xs:string"/>
+			<xs:element name="authenticationFile" type="xs:string" minOccurs="0"/>
+			<xs:element name="passphrase" type="xs:string"/>
+			<xs:element name="createTime" type="xs:dateTime"/>
+			<xs:element name="remark" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--主机配置-->
+	<xs:complexType name="hostConfiguration">
+		<xs:sequence>
+			<xs:element name="hostConfigurationCode" type="codeType"/>
+			<xs:element name="hostName" type="xs:string"/>
+			<xs:element name="hostType" type="xs:string"/>
+			<xs:element name="hostIp" type="xs:string"/>
+			<xs:element name="fileSystemType" type="xs:string" minOccurs="0"/>
+			<xs:element name="ftpPort" type="xs:string"/>
+			<xs:element name="ftpType" type="xs:string"/>
+			<xs:element name="hostDescription" type="xs:string"/>
+			<xs:element name="fileHome" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--api-->
+	<xs:complexType name="apisType">
+		<xs:sequence>
+			<xs:element name="api" type="apiType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="apiType">
+		<xs:sequence>
+			<xs:element name="apiCode" type="codeType"/>
+			<xs:element name="name" type="xs:string"/>
+			<xs:element name="type" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="atom"/>
+						<xs:enumeration value="assemble"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element ref="contractVersion" minOccurs="0"/>
+			<xs:element name="technologyImplements">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element ref="technologyImplement" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="apiInvokeObjects" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="apiInvokeObject" type="apiInvokeObject" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="serviceCatalogCodes" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="serviceCatalogCode" type="codeType" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:choice>
+				<xs:element name="defaultMessageFlowCode" type="codeType"/>
+				<xs:element name="defaultMessageFlow" type="messageFlowType"/>
+			</xs:choice>
+			<xs:element ref="status"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--属性值-->
+	<xs:complexType name="attrValue">
+		<xs:sequence>
+			<xs:element name="attrValueCode" type="codeType"/>
+			<xs:element name="name" type="xs:string"/>
+			<xs:element name="value" type="xs:string"/>
+			<xs:element ref="status"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--服务目录-->
+	<xs:complexType name="serviceCatalog">
+		<xs:sequence>
+			<xs:element name="serviceCatalogCode" type="codeType"/>
+			<xs:element name="parentCatalog" type="serviceCatalog"/>
+			<xs:element name="name" type="xs:string"/>
+			<xs:element name="type" type="xs:string"/>
+			<xs:element name="createTime" type="xs:dateTime"/>
+			<xs:element name="modifyTime" type="xs:dateTime"/>
+			<xs:element ref="status"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--流量控制策略-->
+	<xs:complexType name="flowControlPolicyType">
+		<xs:sequence>
+			<xs:element name="flowControlPolicyTypeCode" type="codeType"/>
+			<xs:element name="name" type="xs:string"/>
+			<xs:element name="type" type="xs:string"/>
+			<xs:element name="unit" type="xs:string"/>
+			<xs:element ref="status"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--技术实现流量控制-->
+	<xs:complexType name="technologyImplementFlowControlType">
+		<xs:sequence>
+			<xs:element name="flowControlCode" type="codeType"/>
+			<xs:element name="flowControlPolicyCode" type="codeType"/>
+			<xs:element name="cutmsValue" type="xs:string"/>
+			<xs:element name="effectStatus" type="xs:string"/>
+			<xs:element name="cycleType" type="xs:string"/>
+			<xs:element name="cycleValue" type="xs:string"/>
+			<xs:element ref="status"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--服务调用实例流量控制-->
+	<xs:element name="apiInvokeObjectFlowControl" type="apiInvokeObjectFlowControlType"/>
+	<xs:complexType name="apiInvokeObjectFlowControlType">
+		<xs:sequence>
+			<xs:element name="flowControlCode" type="codeType"/>
+			<xs:element name="flowControlPolicyCode" type="codeType"/>
+			<xs:element name="cutmsValue" type="xs:string"/>
+			<xs:element name="effectStatus" type="xs:string"/>
+			<xs:element name="cycleType" type="xs:string"/>
+			<xs:element name="cycleValue" type="xs:string"/>
+			<xs:element name="configTime" type="xs:dateTime"/>
+			<xs:element name="modifyTime" type="xs:dateTime"/>
+			<xs:element name="sequence" type="xs:string"/>
+			<xs:element ref="status"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--认证-->
+	<xs:complexType name="authentication">
+		<xs:sequence>
+			<xs:element ref="authenticationExpress" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--认证表达式-->
+	<xs:element name="authenticationExpress" type="authenticationExpressType"/>
+	<xs:complexType name="authenticationExpressType">
+		<xs:sequence>
+			<xs:element name="authenticationExpressCode" type="codeType"/>
+			<xs:element name="type">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="password"/>
+						<xs:enumeration value="ipblack"/>
+						<xs:enumeration value="ipwhite"/>
+						<xs:enumeration value="password sign"/>
+						<xs:enumeration value="token"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element ref="attrValues" minOccurs="0"/>
+			<xs:element ref="status"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--api调用对象-->
+	<xs:complexType name="apiInvokeObject">
+		<xs:sequence>
+			<xs:element name="apiInvokeObjectCode" type="codeType"/>
+			<xs:element name="name" type="xs:string"/>
+			<xs:element name="comsumerComponentCode" type="codeType"/>
+			<xs:element name="authenticationExpresses" type="authentication" minOccurs="0"/>
+			<xs:element name="expressLogicRelation" type="xs:string" minOccurs="0"/>
+			<xs:choice>
+				<xs:element name="messageFlowCode" type="codeType"/>
+				<xs:element name="messageFlow" type="messageFlowType"/>
+			</xs:choice>
+			<xs:element name="apiInvokeObjectFlowControls" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="apiInvokeObjectFlowControl" type="apiInvokeObjectFlowControlType" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="logLevel" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="Off"/>
+						<xs:enumeration value="Fatal"/>
+						<xs:enumeration value="Error"/>
+						<xs:enumeration value="Info"/>
+						<xs:enumeration value="All"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element ref="status"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="status">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:enumeration value="A"/>
+				<xs:enumeration value="B"/>
+				<xs:enumeration value="D"/>
+				<xs:enumeration value="S"/>
+				<xs:enumeration value="R"/>
+				<xs:enumeration value="N"/>
+				<xs:enumeration value="X"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="attrValues" type="attrValuesType"/>
+	<xs:complexType name="attrValuesType">
+		<xs:sequence>
+			<xs:element name="attrValue" type="attrValue" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="codeType">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="80"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

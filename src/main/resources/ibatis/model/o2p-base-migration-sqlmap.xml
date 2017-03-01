@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="baseMapper">
+	<resultMap type="com.asiainfo.integretion.o2p.servicemigration.domain.AttrValue" id="attrValue">
+		<result column="attr_value_code" property="attrValueCode" />
+		<result column="attr_value_name" property="name" />
+		<result column="attr_value" property="value" />
+		<result column="state" property="status" />
+	</resultMap>
+	
+	<resultMap type="com.asiainfo.integretion.o2p.servicemigration.domain.Contract" id="contract">
+		<result column="code" property="contractCode" />
+		<result column="name" property="name" />
+		<result column="descriptor" property="description" />
+		<result column="state" property="status" javaType="java.lang.String" jdbcType="CHAR" />
+	</resultMap>
+	
+	<resultMap type="com.asiainfo.integretion.o2p.servicemigration.domain.ContractVersion" id="contractVersion">
+		<result column="version" property="version" />
+		<result column="is_need_check" property="checkFlag" jdbcType="CHAR" />
+		<result column="descriptor" property="description" />
+		<result column="state" property="status" javaType="java.lang.String" jdbcType="CHAR" />
+		<association column="contractId = contract_id, tenantId = tenant_id" property="baseContractVersion" javaType="com.asiainfo.integretion.o2p.servicemigration.domain.ContractVersion" select="com.asiainfo.integretion.o2p.servicemigration.dao.mapper.ContractMapper.queryBaseContractVersionWithOne" />
+		<association column="contractId = contract_id, tenantId = tenant_id" property="contract" javaType="com.asiainfo.integretion.o2p.servicemigration.domain.Contract" select="com.asiainfo.integretion.o2p.servicemigration.dao.mapper.ContractMapper.queryContractByContractId" />
+		<association column="contractVersionId = contract_version_id, tenantId = tenant_id" property="contractDocument" javaType="com.asiainfo.integretion.o2p.servicemigration.domain.ContractDocument" select="com.asiainfo.integretion.o2p.servicemigration.dao.mapper.ContractMapper.queryContractDocumentByContractVersionIdWithOne" />
+		<association column="contractVersionId = contract_version_id, tenantId = tenant_id" property="requestContractFormat.contractFormatOrCode" javaType="com.asiainfo.integretion.o2p.servicemigration.domain.ContractFormat" select="com.asiainfo.integretion.o2p.servicemigration.dao.mapper.ContractMapper.queryReqContractFormatByContractVersionIdWithOne" />
+		<association column="contractVersionId = contract_version_id, tenantId = tenant_id" property="responceContractFormat.contractFormatOrCode" javaType="com.asiainfo.integretion.o2p.servicemigration.domain.ContractFormat" select="com.asiainfo.integretion.o2p.servicemigration.dao.mapper.ContractMapper.queryRspContractFormatByContractVersionIdWithOne" />
+	</resultMap>
+	
+	<resultMap type="com.asiainfo.integretion.o2p.servicemigration.domain.NodeDesc" id="nodeDesc">
+		<result column="node_desc_code" property="nodeDescCode" />
+		<result column="node_code" property="code" />
+		<result column="node_name" property="name" />
+		<result column="node_path" property="nodePath" />
+		<result column="node_type" property="type" />
+		<result column="node_length_cons" property="lengthCons" />
+		<result column="node_number_cons" property="countCons" />
+		<result column="node_type_cons" property="typeCons" />
+		<result column="is_need_sign" property="isSignature" />
+		<result column="is_need_check" property="isCheck" />
+		<result column="nevl_cons_type" property="nodeValueConsType" />
+		<result column="nevl_cons_value" property="nodeValueConsExpressions" />
+		<result column="java_field" property="javaField" />
+		<result column="descriptor" property="description" />
+		<result column="state" property="status" />
+		<collection column="parentNodeId = node_desc_id, tenantId = tenant_id" property="childNodeDescCodeOrNodeDesc" javaType="java.util.List" select="com.asiainfo.integretion.o2p.servicemigration.dao.mapper.ContractMapper.queryChildNodeDesces" />
+	</resultMap>
+	
+	<resultMap type="com.asiainfo.integretion.o2p.servicemigration.domain.Org" id="org">
+		<result column="org_code" property = "orgCode" />
+		<result column="name" property="name" />
+		<result column="org_type_code" property="type" />
+		<result column="city" property="area" />
+		<result column="org_username" property="username" />
+		<result column="org_pwd" property="password" />
+		<result column="cert_type_code" property="idType" />
+		<result column="cert_number" property="idNumber" />
+		<result column="email" property="email" />
+		<result column="telephone" property="contractNumber" />
+		<result column="s_file_id" property="icon" jdbcType="INTEGER" />
+		<result column="fil_s_file_id" property="idScannedCopy" jdbcType="INTEGER" />
+		<result column="descriptor" property="description" />
+		<result column="state" property="status" jdbcType="CHAR" />
+		<collection column="orgId = org_id, tenantId = tenant_id" property="roles" javaType="java.util.List" select="com.asiainfo.integretion.o2p.servicemigration.dao.mapper.BaseMapper.queryOrgRoleByOrgId" />
+	</resultMap>
+	
+	<resultMap type="com.asiainfo.integretion.o2p.servicemigration.domain.App" id="app">
+		<result column="app_summa" property="summary" />
+		<result column="app_url" property="url" />
+		<result column="app_type_name" property="type" />
+		<result column="app_oauth_type" property="oauthType" />
+		<result column="TOKEN_ENABLE_TIME" property="tokenEnabledTime" />
+		<result column="appkey" property="appKey" />
+		<result column="app_desc" property="description" />
+	</resultMap>
+	
+	<resultMap type="com.asiainfo.integretion.o2p.servicemigration.domain.ContractDocument" id="contractDocument">
+		<result column="doc_name" property="name" />
+		<result column="resource_aliss" property="resourceAliss" />
+		<result column="doc_version" property="version" />
+		<result column="doc_type" property="type" />
+		<result column="state" property="status" />
+		<association column="fileShareId = doc_path, tenantId = tenant_id"  property="fileShareOrCode" javaType="com.asiainfo.integretion.o2p.servicemigration.domain.FileShare" select="com.asiainfo.integretion.o2p.servicemigration.dao.mapper.ContractMapper.queryFileShareById"></association>
+		<association column="baseContractDocId = base_con_doc_id, tenantId = tenant_id"  property="baseContractDocument" javaType="com.asiainfo.integretion.o2p.servicemigration.domain.ContractDocument" select="com.asiainfo.integretion.o2p.servicemigration.dao.mapper.ContractMapper.queryBaseDocumentById"></association>
+	</resultMap>
+	
+	<resultMap type="com.asiainfo.integretion.o2p.servicemigration.domain.FileShare" id="fileShare">
+		<result column="file_share_code" property="fileShareCode" />
+		<result column="s_file_name" property="name" />
+		<result column="s_file_content" property="content" typeHandler="com.asiainfo.integretion.o2p.servicemigration.common.typeHandlers.BlobTypeHandler" />
+		<result column="state" property="status" />
+	</resultMap>
+	
+	<resultMap type="com.asiainfo.integretion.o2p.servicemigration.domain.Endpoint" id="endpoint">
+		<result column="endpoint_code" property="endpointCode" />
+		<result column="endpoint_name" property="endpointName" />
+		<result column="in_data_type_code" property="inDataTypeCode"/>
+		<result column="out_data_type_code" property="outDataTypeCode"/>
+		<result column="enable_in_trace" property="inTrace" />
+		<result column="enable_in_log" property="inLog" />
+		<result column="enable_out_log" property="outLog" />
+		<result column="endpoint_desc" property="endpointDesc" />
+		<result column="state" property="status" />
+		<result column="map_code" property="mapCode" />
+		<result column="endpoint_spec_code" property="endpointSpec.endpointSpecCode"/>
+		<association column="{endpointSpecCode=endpoint_spec_code, endpointId=endpoint_id, tenantId = tenant_id}" property="endpointSpec.endpointSpecDetail" javaType="com.asiainfo.integretion.o2p.servicemigration.domain.BasedBean" select="queryEndpointSpecDetailBySpecCodeAndEndpointId"/>
+		<collection column="endpointId = endpoint_id, tenantId = tenant_id" property="attrValues" javaType="java.util.List" select="com.asiainfo.integretion.o2p.servicemigration.dao.mapper.ApiInvokeMapper.queryAttrValueByEndpointId" />
+	</resultMap>
+	
+	<resultMap type="com.asiainfo.integretion.o2p.servicemigration.domain.TechnologyImplement" id="techImpl">
+		<result column="tech_impl_code" property="technologyImplementCode" />
+		<result column="code" property="producerComponentCode" />
+		<result column="tech_impl_name" property="name" />
+		<result column="comm_pro_name" property="communicationPotocolCode" />
+		<result column="usealbe_state" property="status" javaType="java.lang.String" jdbcType="CHAR" />
+		<collection column="techImplId = tech_impl_id, tenantId = tenant_id" property="attrValues" javaType="java.util.List" select="com.asiainfo.integretion.o2p.servicemigration.dao.mapper.ServiceMapper.queryAttrValuesByTechImplId" />
+		<collection column="techImplId = tech_impl_id, tenantId = tenant_id" property="technologyImplementFlowControls" javaType="java.util.List" select="com.asiainfo.integretion.o2p.servicemigration.dao.mapper.ServiceMapper.queryTechnologyImplementFlowControlsByTechImplId" />
+		<collection column="techImplId = tech_impl_id, tenantId = tenant_id" property="technologyImplementNodes" javaType="java.util.List" select="com.asiainfo.integretion.o2p.servicemigration.dao.mapper.ServiceMapper.queryTechnologyImplementNodesByTechImplId" />
+	</resultMap>
+	
+	<resultMap type="com.asiainfo.integretion.o2p.servicemigration.domain.ContractFormat" id="contractFormat">
+		<result column="contract_format_code" property="contractFormatCode"/>
+		<result column="con_type" property="formatType" />
+		<result column="descriptor" property="description" />
+		<result column="state" property="status" />
+		<collection column="contractFormatId = tcp_ctr_f_id, tenantId = tenant_id" property="nodeDescCodeOrNodeDesc" javaType="java.util.List" select="com.asiainfo.integretion.o2p.servicemigration.dao.mapper.ContractMapper.queryNodeDescByContractFormatId" />
+		<collection column="contractFormatId = tcp_ctr_f_id, tenantId = tenant_id" property="attrValues" javaType="java.util.List" select="com.asiainfo.integretion.o2p.servicemigration.dao.mapper.ContractMapper.queryAttrValueByContractFormatId" />
+	</resultMap>
+	
+	<resultMap type="com.asiainfo.integretion.o2p.servicemigration.domain.Transformer" id="transformer">
+		<result column="contract_adapter_code" property="transformerCode" />
+		<result column="apapter_name" property="adapterName" />
+		<result column="adapter_type" property="adapterType" />
+		<result column="script_src" property="scriptSrc" />
+		<result column="state" property="status" />
+		<result column="src_contract_format_code" property="sourceContractFormatCode" />
+		<result column="tar_contract_format_code" property="targetContractFormatCode" />
+		<collection column = "contractAdapterId = contract_adapter_id, tenantId = tenant_id" property = "contractAdapterEndpoints" javaType="java.util.List" select="com.asiainfo.integretion.o2p.servicemigration.dao.mapper.ContractMapper.queryContractAdapterEndpointByContractAdapterId" />
+		<collection column = "contractAdapterId = contract_adapter_id, tenantId = tenant_id" property = "variableMaps" javaType="java.util.List" select="com.asiainfo.integretion.o2p.servicemigration.dao.mapper.ContractMapper.queryVariableMapsByContractAdapterId" />
+		<collection column="contractAdapterId = contract_adapter_id, tenantId = tenant_id" property="nodeDescMapers" javaType="java.util.List" select="com.asiainfo.integretion.o2p.servicemigration.dao.mapper.ContractMapper.queryNodeDescMappersByTransfromId"></collection>
+		<collection column="contractAdapterId = contract_adapter_id, tenantId = tenant_id" property="nodeValueAdapterReqs" javaType="java.util.List" select="com.asiainfo.integretion.o2p.servicemigration.dao.mapper.ContractMapper.queryNodeValuesByTransfromId"></collection>
+	</resultMap>
+	
+	<resultMap type="com.asiainfo.integretion.o2p.servicemigration.domain.GetValueExpr" id="getValueExpr">
+		<result column="get_value_expr_code" property="getValueExprCode" />
+		<result column="cond_evaluator_code" property="condEvaluatorCode" javaType="java.lang.String" />
+		<result column="expr" property="expr" javaType="java.lang.String" />
+		<result column="req_rsp" property="reqRsp" javaType="java.lang.String" />
+		<result column="expr_type" property="exprType" javaType="java.lang.String" />
+		<association column="getValueExprId = up_expr_id, tenantId = tenant_id" property="upGetValueExpr" javaType="com.asiainfo.integretion.o2p.servicemigration.domain.GetValueExpr" select="com.asiainfo.integretion.o2p.servicemigration.dao.mapper.ApiInvokeMapper.queryGetValueExprByExprId" />
+	</resultMap>
+	
+	<resultMap type="com.asiainfo.integretion.o2p.servicemigration.domain.RoutePolicy" id="routePolicy">
+		<result column="route_policy_code" property="routePolicyCode" />
+		<result column="rule_strategy_code" property="ruleStrategyCode" javaType="java.lang.String" />
+		<association column="routeConditionId = route_cond_id tenantId = tenant_id" property="routeCondition" javaType="com.asiainfo.integretion.o2p.servicemigration.domain.RouteCondition" select="com.asiainfo.integretion.o2p.servicemigration.dao.mapper.ApiInvokeMapper.queryRouteConditionById" />
+	</resultMap>
+	
+	<resultMap type="com.asiainfo.integretion.o2p.servicemigration.domain.MessageFlow" id="messageFlow">
+		<result column="message_flow_code" property="messageFlowCode" />
+		<result column="message_flow_name" property="messageFlowName" />
+		<result column="create_time" property="createTime" typeHandler="com.asiainfo.integretion.o2p.servicemigration.common.typeHandlers.XMLGregorianCalendarToDateHandle" />
+		<result column="lastest_time" property="changeTime" typeHandler="com.asiainfo.integretion.o2p.servicemigration.common.typeHandlers.XMLGregorianCalendarToDateHandle" />
+		<result column="descriptor" property="description" />
+		<result column="state" property="status" jdbcType="CHAR" />
+		<result column="first_endpoint_code" property="startEndpointCode" javaType="java.lang.String" />
+		<collection column="messageFlowId = message_flow_id, tenantId = tenant_id" property="serviceRouteConfigs" javaType="java.util.List" select="com.asiainfo.integretion.o2p.servicemigration.dao.mapper.ApiInvokeMapper.queryRouteByMessageFlowId" />
+		<collection column="messageFlowId = message_flow_id, tenantId = tenant_id" property="endpoints" javaType="java.util.List" select="com.asiainfo.integretion.o2p.servicemigration.dao.mapper.ApiInvokeMapper.queryEndpointsByMessageFlowId" />
+	</resultMap>
+	
+	<resultMap type="com.asiainfo.integretion.o2p.servicemigration.domain.RouteCondition" id="routeCondition">
+		<result column="route_condition_code" property="routeConditionCode" javaType="java.lang.String" />
+		<result column="operator_code" property="operatorCode" javaType="java.lang.String" />
+		<result column="match_value" property="matchValue" javaType="java.lang.String" />
+		<result column="cond_relation" property="condRelation" javaType="java.lang.String" />
+		<result column="route_condition_expr" property="routeConditionExpr" javaType="java.lang.String" />
+		<association column="routeConditionId = up_route_cond_id, tenantId = tenant_id" property="upRouteCondition" javaType="com.asiainfo.integretion.o2p.servicemigration.domain.RouteCondition"  select="com.asiainfo.integretion.o2p.servicemigration.dao.mapper.ApiInvokeMapper.queryRouteConditionById" />
+		<association column="getValueExprId = get_value_expr_id, tenantId = tenant_id" property="getValueExpr" javaType="com.asiainfo.integretion.o2p.servicemigration.domain.GetValueExpr" select="com.asiainfo.integretion.o2p.servicemigration.dao.mapper.ApiInvokeMapper.queryGetValueExprByExprId" />
+	</resultMap>
+	
+	<resultMap type="com.asiainfo.integretion.o2p.servicemigration.domain.ServiceTechnologyImplement" id="serviceTechnologyImplement">
+		<result column="tech_impl_code" property="technologyImplementCode" javaType="java.lang.String" />
+		<result column="service_code" property="apiCode" javaType="java.lang.String" />
+	</resultMap>
+	
+	<resultMap type="com.asiainfo.integretion.o2p.servicemigration.domain.BasedBean" id="endpointSpecDetail">
+		<discriminator javaType="java.lang.String" column="attr_spec_code" >
+			<case value="servicetechid" resultMap="serviceTechnologyImplement"></case>
+			<case value="transformer_rule_id" resultMap="transformer"></case>
+		</discriminator>
+	</resultMap>
+	
+	<select id="queryEndpointSpecDetailBySpecCodeAndEndpointId" resultMap="endpointSpecDetail" parameterType="java.util.Map">
+		<choose>
+			<when test='endpointSpecCode == "TRANSFORMER-v2"'>
+				select distinct ca.*, ac.attr_spec_code, cf1.contract_format_code as src_contract_format_code, cf2.contract_format_code as tar_contract_format_code from contract_adapter ca
+				left join contract_format cf1 on ca.src_ctr_f_id = cf1.tcp_ctr_f_id
+				left join contract_format cf2 on ca.tar_ctr_f_id = cf2.tcp_ctr_f_id
+				left join endpoint_attr_value av on av.attr_value = ca.contract_adapter_id
+				left join endpoint_spec_attr esa on esa.endpoint_spec_attr_id=av.endpoint_spec_attr_id
+			  	left join endpoint_spec ec on ec.endpoint_spec_id=esa.endpoint_spec_id
+			  	left join attr_spec ac on ac.attr_spec_id=esa.attr_spec_id
+			  	where ec.endpoint_spec_code=#{endpointSpecCode} and ac.attr_spec_code='transformer_rule_id' and av.endpoint_id=#{endpointId} <if test="tenantId != null">and ca.tenant_id=#{tenantId}</if>
+			</when>
+			<when test='endpointSpecCode == "CALL" or endpointSpecCode == "jmscall" or endpointSpecCode == "JMSRECEIVE" or endpointSpecCode == "SOCKETACCESS" or endpointSpecCode == "download" or endpointSpecCode == "filemove-v2"'>
+				select distinct s.service_code, t.tech_impl_code, sx.attr_spec_code from (
+					select sti.service_id, sti.tech_impl_id,ac.attr_spec_code from ser_tech_impl sti 
+					left join endpoint_attr_value av on av.attr_value = concat('', sti.ser_tech_impl_id)
+					left join endpoint_spec_attr esa on esa.endpoint_spec_attr_id=av.endpoint_spec_attr_id
+					left join endpoint_spec ec on ec.endpoint_spec_id=esa.endpoint_spec_id
+					left join attr_spec ac on ac.attr_spec_id=esa.attr_spec_id
+					where ec.endpoint_spec_code=#{endpointSpecCode} and ac.attr_spec_code='servicetechid' and av.endpoint_id=#{endpointId} <if test="tenantId != null">and sti.tenant_id=#{tenantId}</if>
+					
+				) sx 
+				left join service s on sx.service_id = s.service_id 
+				left join tech_impl t on sx.tech_impl_id = t.tech_impl_id
+			</when>
+			<otherwise>
+				select * from endpoint_attr_value where 1=2
+			</otherwise>
+		</choose>
+	</select>
+</mapper>

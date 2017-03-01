@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.asiainfo.integretion.o2p.servicemigration.dao.mapper.DaoMapper">
+	<insert id="insertContract" parameterType="com.asiainfo.integretion.o2p.servicemigration.domain.Contract">
+		insert into contract(
+			contract_id, code,base_contract_id, name, create_time, lastest_time, descriptor, state<if test="tenantId != null">, tenant_id</if>
+		) values (
+			#{id},#{contractCode},#{attributes.baseContractId},#{name},
+			#{attributes.createTime,typeHandler=XMLGregorianCalendarToDateHandle}, #{attributes.modifyTime,typeHandler=XMLGregorianCalendarToDateHandle},
+			#{description},#{status}<if test="tenantId != null">, #{tenantId}</if>
+		)
+	</insert>
+	<update id="updateContract">
+		update contract set
+		base_contract_id=#{attributes.baseContractId},
+		<if test="_databaseId  == 'mysql'">lastest_time = now(),</if>
+		<if test="_databaseId  == 'oracle'">lastest_time = sysdate,</if>
+		code = #{contractCode}, name = #{name}, descriptor = #{description}, state = #{status} where code = #{contractCode}
+	</update>
+	
+	
+	<insert id="insertContractDocument" parameterType="com.asiainfo.integretion.o2p.servicemigration.domain.ContractDocument">
+		insert into contract_doc(
+			contract_doc_id,<if test="baseContractDocument != null">base_con_doc_id,</if>doc_name, resource_aliss, 
+			<if test="attributes != null">doc_path,</if>
+			doc_version, doc_type, state,doc_create_time,lastest_time<if test="tenantId != null">, tenant_id</if>
+		) values (
+			#{id},<if test="baseContractDocument != null">(select contract_doc_id from contract_doc where resource_aliss = #{baseContractDocument.resourceAliss} and tenant_id=#{tenantId}),</if>#{name},#{resourceAliss},
+			<if test="attributes != null">(select s_file_id from file_share where FILE_SHARE_CODE = #{attributes.fileShareOrCode} and tenant_id=#{tenantId}),</if>
+			#{version},#{type},#{status},#{attributes.createTime,typeHandler=XMLGregorianCalendarToDateHandle}, #{attributes.modifyTime,typeHandler=XMLGregorianCalendarToDateHandle}<if test="tenantId != null">, #{tenantId}</if>
+		)
+	</insert>
+	<update id="updateContractDocument">
+		update contract_doc set
+		<if test="baseContractDocument != null">base_con_doc_id=(select contract_doc_id from contract_doc where resource_aliss = #{baseContractDocument.resourceAliss} and tenant_id=#{tenantId}),</if>
+		<if test="attributes != null">doc_path=(select s_file_id from file_share where s_file_name = #{attributes.fileShareOrCode} and tenant_id=#{tenantId}),</if>
+		<if test="attributes == null">doc_path=null</if>
+		doc_name = #{name}, doc_version = #{version}, doc_type = #{type}, state = #{status}
+		where resource_aliss = #{resourceAliss}
+	</update>
+	
+	<insert id="insertTransformer" parameterType="com.asiainfo.integretion.o2p.servicemigration.domain.Transformer">
+		insert into contract_adapter(contract_adapter_id,contract_adapter_code,src_ctr_f_id, tar_ctr_f_id, apapter_name,adapter_type,script_src,create_dt,state<if test="tenantId != null">, tenant_id</if>) 
+		values(#{id},#{transformerCode},
+		<if test="attributes != null">(select tcp_ctr_f_id from contract_format where contract_format_code = #{sourceContractFormatCode} and tenant_id=#{tenantId}),</if>
+		<if test="attributes != null">(select tcp_ctr_f_id from contract_format where contract_format_code = #{targetContractFormatCode} and tenant_id=#{tenantId}),</if>
+		#{adapterName},#{adapterType},#{scriptSrc},#{attributes.createTime,typeHandler=XMLGregorianCalendarToDateHandle},#{status}<if test="tenantId != null">, #{tenantId}</if>)
+	</insert>
+	<update id="updateTransformer">
+		update contract_adapter set 
+		<if test="attributes != null">src_ctr_f_id = (select tcp_ctr_f_id from contract_format where contract_format_code = #{sourceContractFormatCode} and tenant_id=#{tenantId}),</if>
+		<if test="attributes != null">tar_ctr_f_id = (select tcp_ctr_f_id from contract_format where contract_format_code = #{targetContractFormatCode} and tenant_id=#{tenantId}),</if>
+		apapter_name = #{adapterName}, adapter_type = #{adapterType}, script_src = #{scriptSrc}, 
+		STATE = #{status} where contract_adapter_code = #{transformerCode}
+	</update>
+	
+	<insert id="insertRouteCondition" parameterType="com.asiainfo.integretion.o2p.servicemigration.domain.RouteCondition">
+		insert into route_condition(route_cond_id, 
+		<if test="upRouteCondition != null">up_route_cond_id,</if>
+		route_condition_code, operator_id, match_value, cond_relation, route_condition_expr, get_value_expr_id<if test="tenantId != null">, tenant_id</if>) 
+		values(#{id},
+		<if test="upRouteCondition != null">(select route_cond_id from route_condition where route_condition_code = #{upRouteCondition.routeConditionCode} and tenant_id=#{tenantId}),</if>
+		#{routeConditionCode},(select operator_id from comparison_operator where operator_code = #{operatorCode} and tenant_id=#{tenantId}),#{matchValue},#{condRelation},#{routeConditionExpr}, #{getValueExpr.id}<if test="tenantId != null">, #{tenantId}</if>)
+	</insert>
+	<update id="updateRouteCondition">
+		update route_condition set
+		<if test="upRouteCondition != null">up_route_cond_id=(select route_cond_id from route_condition where route_condition_code = #{upRouteCondition.routeConditionCode} and tenant_id=#{tenantId}),</if>
+		route_condition_code = #{routeConditionCode}, 
+		operator_id = (select operator_id from comparison_operator where operator_code = #{operatorCode} and tenant_id=#{tenantId}), match_value = #{matchValue}, cond_relation = #{condRelation}, route_condition_expr = #{routeConditionExpr} 
+		where route_condition_code = #{routeConditionCode}
+	</update>
+	
+	<insert id="insertContractVersion" parameterType="com.asiainfo.integretion.o2p.servicemigration.domain.ContractVersion">
+		insert into contract_version(contract_version_id, contract_id, version, is_need_check, descriptor, state,create_time,lastest_time,eff_date, exp_date<if test="tenantId != null">, tenant_id</if>) values(#{id},(select contract_id from contract where code = #{contract.contractCode} and tenant_id=#{tenantId}),#{version},#{checkFlag},#{description},#{status},#{attributes.createTime,typeHandler=XMLGregorianCalendarToDateHandle}, #{attributes.modifyTime,typeHandler=XMLGregorianCalendarToDateHandle},#{attributes.createTime,typeHandler=XMLGregorianCalendarToDateHandle},#{attributes.createTime,typeHandler=XMLGregorianCalendarToDateHandle}<if test="tenantId != null">, #{tenantId}</if>)
+	</insert>
+	
+	<insert id="insertApiInvokeObjectFlowControl" parameterType="com.asiainfo.integretion.o2p.servicemigration.domain.ApiInvokeObjectFlowControl">
+		insert into ctl_counterms_2_comp(ctl_c_2_comp_id,ctl_counterms_2_comp_code, cc_cd,  ser_invoke_ins_id, cutms_value, effect_state,cycle_type, cycle_value, config_time, lastest_time, cc_seq<if test="tenantId != null">, tenant_id</if>) values(#{id},#{flowControlCode},(select cc_cd from control_counterms where name = #{flowControlPolicyCode} and tenant_id=#{tenantId}),(select ser_invoke_ins_id from ser_invoke_ins where ser_invoke_ins_code = #{attributes.apiInvokeObjectCode} and tenant_id=#{tenantId}),#{cutmsValue},#{effectStatus},#{cycleType},#{cycleValue},#{attributes.createTime,typeHandler=XMLGregorianCalendarToDateHandle},#{attributes.modifyTime,typeHandler=XMLGregorianCalendarToDateHandle},#{sequence}<if test="tenantId != null">, #{tenantId}</if>)
+	</insert>
+	
+	<insert id="insertApi" parameterType="com.asiainfo.integretion.o2p.servicemigration.domain.Api">
+		insert into service(service_id, contract_version_id, service_version, service_cn_name, service_en_name, service_code, service_type, state, create_date, lastest_date, is_published,default_msg_flow<if test="tenantId != null">, tenant_id</if>) 
+		values(#{id}, (select contract_version_id from contract_version where version = #{contractVersionCode} and tenant_id=#{tenantId}), #{version},#{name}, #{name}, #{apiCode}, #{type}, #{status}, #{attributes.createTime,typeHandler=XMLGregorianCalendarToDateHandle}, #{attributes.modifyTime,typeHandler=XMLGregorianCalendarToDateHandle}, 1,(select message_flow_id from message_flow where message_flow_code=#{attributes.messageFlowOrCode} and tenant_id=#{tenantId})<if test="tenantId != null">, #{tenantId}</if>)
+	</insert>
+	
+	<insert id="insertApiMethod" parameterType="java.util.Map">
+		insert into api(api_id, service_id, api_name, api_version, api_method, api_state<if test="tenantId != null">, tenant_id</if>) 
+		values(#{id}, (select service_id from service where service_code=#{serviceCode} and tenant_id=#{tenantId}), #{name},#{version}, #{method}, #{status}<if test="tenantId != null">, #{tenantId}</if>)
+	</insert>
+	
+	<insert id="insertService" parameterType="java.util.Map">
+		insert into service_bean(service_bean_id, service_bean_code, style, service_bean_name, create_date, modify_date, description, state, service_address<if test="tenantId != null">, tenant_id</if>) values(#{id}, #{serviceCode}, #{style}, #{name}, #{attributes.createTime,typeHandler=XMLGregorianCalendarToDateHandle},#{attributes.modifyTime,typeHandler=XMLGregorianCalendarToDateHandle}, #{description, jdbcType=VARCHAR}, #{status}, #{serviceAddress}<if test="tenantId != null">, #{tenantId}</if>)
+	</insert>
+	
+	<insert id="insertOrg" parameterType="java.util.Map">
+		insert into org(org_id, org_code, name, org_type_code, area_id, org_username, org_pwd, cert_type_code, cert_number, email, telephone, s_file_id, fil_s_file_id, descriptor, state,create_time,state_time<if test="tenantId != null">, tenant_id</if>) values(#{id},#{orgCode},#{name},#{type},(select area_id from area where zone_name =#{area} and tenant_id=#{tenantId}),#{username},#{password},#{idType},#{idNumber},#{email},#{contractNumber},#{icon},#{idScannedCopy},#{description},#{status},#{attributes.createTime,typeHandler=XMLGregorianCalendarToDateHandle},#{attributes.modifyTime,typeHandler=XMLGregorianCalendarToDateHandle}<if test="tenantId != null">, #{tenantId}</if>)
+	</insert>
+	
+	<insert id="insertComponent" parameterType="java.util.Map">
+		insert into component(component_id, org_id, code, name, component_type_id, state,reg_time, state_time<if test="tenantId != null">, tenant_id</if>) values(#{id},(select org_id from org where org_code = #{attributes.org} and tenant_id=#{tenantId}),#{componentCode},#{name},(select component_type_id from component_type where name = #{type}),#{status},#{attributes.createTime,typeHandler=XMLGregorianCalendarToDateHandle},#{attributes.modifyTime,typeHandler=XMLGregorianCalendarToDateHandle}<if test="tenantId != null">, #{tenantId}</if>)
+	</insert>
+	
+	<update id="codeInit">
+		<if test="_databaseId  == 'oracle'">begin</if>
+		update ctl_counterms_2_tech gv set flow_control_code = <if test="_databaseId  == 'mysql'">uuid()</if><if test="_databaseId  == 'oracle'">rawtohex(sys_guid())</if> where flow_control_code is null;
+		update directory set dir_code = <if test="_databaseId  == 'mysql'">uuid()</if><if test="_databaseId  == 'oracle'">rawtohex(sys_guid())</if> where dir_code is null;
+		update ser_invoke_ins set ser_invoke_ins_code = <if test="_databaseId  == 'mysql'">uuid()</if><if test="_databaseId  == 'oracle'">rawtohex(sys_guid())</if> where ser_invoke_ins_code is null;
+		update proof_effect set proof_effect_code = <if test="_databaseId  == 'mysql'">uuid()</if><if test="_databaseId  == 'oracle'">rawtohex(sys_guid())</if> where proof_effect_code is null;
+		update ctl_counterms_2_comp set ctl_counterms_2_comp_code = <if test="_databaseId  == 'mysql'">uuid()</if><if test="_databaseId  == 'oracle'">rawtohex(sys_guid())</if> where ctl_counterms_2_comp_code is null;
+		update message_flow set message_flow_code = <if test="_databaseId  == 'mysql'">uuid()</if><if test="_databaseId  == 'oracle'">rawtohex(sys_guid())</if> where message_flow_code is null;
+		update contract_adapter set contract_adapter_code = <if test="_databaseId  == 'mysql'">uuid()</if><if test="_databaseId  == 'oracle'">rawtohex(sys_guid())</if> where contract_adapter_code is null;
+		update route_policy set route_policy_code = <if test="_databaseId  == 'mysql'">uuid()</if><if test="_databaseId  == 'oracle'">rawtohex(sys_guid())</if> where route_policy_code is null;
+		update node_desc_maper set node_desc_maper_code = <if test="_databaseId  == 'mysql'">uuid()</if><if test="_databaseId  == 'oracle'">rawtohex(sys_guid())</if> where node_desc_maper_code is null;
+		update node_val_adapter_req set node_val_adapter_req_code = <if test="_databaseId  == 'mysql'">uuid()</if><if test="_databaseId  == 'oracle'">rawtohex(sys_guid())</if> where node_val_adapter_req_code is null;
+		update variable_map set variable_map_code = <if test="_databaseId  == 'mysql'">uuid()</if><if test="_databaseId  == 'oracle'">rawtohex(sys_guid())</if> where variable_map_code is null;
+		update contract_adapter_endpoint set contract_adapter_endpoint_code = <if test="_databaseId  == 'mysql'">uuid()</if><if test="_databaseId  == 'oracle'">rawtohex(sys_guid())</if> where contract_adapter_endpoint_code is null;
+		update contract_format set contract_format_code = <if test="_databaseId  == 'mysql'">uuid()</if><if test="_databaseId  == 'oracle'">rawtohex(sys_guid())</if> where contract_format_code is null;
+		update route_condition set route_condition_code = <if test="_databaseId  == 'mysql'">uuid()</if><if test="_databaseId  == 'oracle'">rawtohex(sys_guid())</if> where route_condition_code is null;
+		update get_value_expr gv set get_value_expr_code = <if test="_databaseId  == 'mysql'">uuid()</if><if test="_databaseId  == 'oracle'">rawtohex(sys_guid())</if> where get_value_expr_code is null;
+		update node_desc gv set node_desc_code = <if test="_databaseId  == 'mysql'">uuid()</if><if test="_databaseId  == 'oracle'">rawtohex(sys_guid())</if> where node_desc_code is null;
+		update tech_impl gv set tech_impl_code = <if test="_databaseId  == 'mysql'">uuid()</if><if test="_databaseId  == 'oracle'">rawtohex(sys_guid())</if> where tech_impl_code is null;
+		update service_route_config set service_route_config_code = <if test="_databaseId  == 'mysql'">uuid()</if><if test="_databaseId  == 'oracle'">rawtohex(sys_guid())</if> where service_route_config_code is null;
+		update file_share set file_share_code = <if test="_databaseId  == 'mysql'">uuid()</if><if test="_databaseId  == 'oracle'">rawtohex(sys_guid())</if> where file_share_code is null;
+		update TECH_IMPL_NODE set node_code = <if test="_databaseId  == 'mysql'">uuid()</if><if test="_databaseId  == 'oracle'">rawtohex(sys_guid())</if> where node_code is null;
+		<if test="_databaseId  == 'oracle'">end;</if>
+	</update>
+	
+	<insert id="insertServiceBean" parameterType="java.util.Map">
+		<if test="_databaseId  == 'oracle'">begin</if>
+		insert into SERVICE_BEAN(SERVICE_BEAN_ID, SERVICE_BEAN_CODE, STYLE, SERVICE_BEAN_NAME, CREATE_DATE, MODIFY_DATE, DESCRIPTION, STATE, TENANT_ID) (select <if test="_databaseId  == 'mysql'">NEXTVAL('SEQ_SERVICE_BEAN')</if><if test="_databaseId  == 'oracle'">SEQ_SERVICE_BEAN.nextval</if>, CD.RESOURCE_ALISS, 2, CD.RESOURCE_ALISS, #{now}, #{now}, 'DATA INIT', 'A', CD.TENANT_ID from CONTRACT_DOC CD where CD.RESOURCE_ALISS not in (select SERVICE_BEAN_CODE from SERVICE_BEAN));
+
+		insert into SERVICE_BEAN_2_SERVICE(SERVICE_BEAN_2_SERVICE_ID, SERVICE_ID, SERVICE_BEAN_ID, STATE, TENANT_ID) (select <if test="_databaseId  == 'mysql'">NEXTVAL('SEQ_SERVICE_BEAN_2_SERVICE')</if><if test="_databaseId  == 'oracle'">SEQ_SERVICE_BEAN_2_SERVICE.nextval</if>, SERV.SERVICE_ID, SB.SERVICE_BEAN_ID, 'A', SERV.TENANT_ID from (select SE.SERVICE_ID,DC.RESOURCE_ALISS, SE.TENANT_ID from SERVICE SE LEFT JOIN (SELECT DCO.*,COD.RESOURCE_ALISS FROM DOC_CONTRACT DCO LEFT JOIN CONTRACT_DOC COD ON DCO.CONTRACT_DOC_ID=COD.CONTRACT_DOC_ID) DC ON SE.CONTRACT_VERSION_ID=DC.CONTRACT_VERSION_ID WHERE SE.CONTRACT_VERSION_ID IN (SELECT CONTRACT_VERSION_ID FROM DOC_CONTRACT) and SE.SERVICE_ID NOT IN (SELECT SERVICE_ID FROM SERVICE_BEAN_2_SERVICE)) SERV left join SERVICE_BEAN SB on SB.SERVICE_BEAN_CODE=SERV.RESOURCE_ALISS WHERE SB.TENANT_ID=SERV.TENANT_ID);
+		
+		insert into SERVICE_BEAN(SERVICE_BEAN_ID, SERVICE_BEAN_CODE, STYLE, SERVICE_BEAN_NAME, CREATE_DATE, MODIFY_DATE, DESCRIPTION, STATE, TENANT_ID) select <if test="_databaseId  == 'mysql'">NEXTVAL('SEQ_SERVICE_BEAN')</if><if test="_databaseId  == 'oracle'">SEQ_SERVICE_BEAN.nextval</if>, SE.SERVICE_CODE, 4, SE.SERVICE_CN_NAME, #{now}, #{now}, 'DATA INIT', 'A', SE.TENANT_ID from SERVICE SE where service_id not in(select SERVICE_ID from SERVICE_BEAN_2_SERVICE);
+		
+		insert into SERVICE_BEAN_2_SERVICE(SERVICE_BEAN_2_SERVICE_ID, SERVICE_ID, SERVICE_BEAN_ID, STATE, TENANT_ID) select <if test="_databaseId  == 'mysql'">NEXTVAL('SEQ_SERVICE_BEAN_2_SERVICE')</if><if test="_databaseId  == 'oracle'">SEQ_SERVICE_BEAN_2_SERVICE.nextval</if>, SE.SERVICE_ID, SB.SERVICE_BEAN_ID, 'A', SB.TENANT_ID from SERVICE_BEAN sb left join service se on SB.SERVICE_BEAN_CODE=SE.SERVICE_CODE where SB.SERVICE_BEAN_ID is not null and SE.SERVICE_ID is not null and SE.SERVICE_ID not in(select SERVICE_ID from service_bean_2_service) WHERE SE.TENANT_ID=SB.TENANT_ID;
+		<if test="_databaseId  == 'oracle'">end;</if>
+	</insert>
+</mapper>

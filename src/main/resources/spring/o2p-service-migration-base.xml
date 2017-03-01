@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:task="http://www.springframework.org/schema/task" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+       ">
+ 	<context:component-scan base-package="com.asiainfo.integretion.o2p.servicemigration" />
+	<mvc:annotation-driven />
+	<bean class="com.ailk.eaap.o2p.common.spring.config.O2pPropertyPlaceholderConfigurer">
+        <property name="remoteOverride" value="true"></property>
+        <property name="cacheHolder" ref="cacheHolder"></property>
+    </bean>
+	
+   <!--<bean id="propertyConfigurer" class="com.ailk.eaap.o2p.common.spring.config.O2pPropertyPlaceholderConfigurer">
+
+		<property name="locations">
+			<list>
+				<value>classpath:eaap_common.properties</value>
+			</list>
+		</property>
+	</bean>-->
+    
+     <bean id="cacheHolder" class="com.ailk.eaap.o2p.common.spring.config.ZKCfgCacheHolder">
+        <property name="ignoreResourceNotFound" value="true"></property>
+    </bean>
+	
+	<!-- 支持上传文件 -->  
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
+
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">  
+	    <property name="prefix" value="/WEB-INF/" />  
+	    <property name="suffix" value=".jsp" />  
+	</bean>
+	
+	<!-- transaction support-->
+	<!-- PlatformTransactionMnager -->
+	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+	    <property name="dataSource" ref="common-dataSource" />
+	</bean>
+	<!-- enable transaction annotation support -->
+	<tx:annotation-driven transaction-manager="txManager" />
+	
+	<aop:aspectj-autoproxy/> 
+</beans>

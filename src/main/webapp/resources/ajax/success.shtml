@@ -1,0 +1,33 @@
+<div role="alert" class="alert alert-info"> 成功<strong>10</strong> 条</div>
+<table class="table table-bordered table-striped">
+  <colgroup width="30">
+  </colgroup>
+  <colgroup width="247">
+  </colgroup>
+  <colgroup>
+  </colgroup>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>New</th>
+      <th>Old</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="danger">
+      <td>2</td>
+      <td>3388056</td>
+      <td>not implemented for Bootstrap 3 yet</td>
+    </tr>
+    <tr class="warning">
+      <td>1</td>
+      <td>3388056</td>
+      <td>not implemented for Bootstrap 3 yet</td>
+    </tr>
+    <tr class="success">
+      <td>3</td>
+      <td>3388056</td>
+      <td>not implemented for Bootstrap 3 yet</td>
+    </tr>
+  </tbody>
+</table>

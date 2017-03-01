@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+	<filter>
+    <filter-name>CharacterEncodingFilter</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>utf-8</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>CharacterEncodingFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+ 
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>
+        	classpath:spring/o2p-service-migration-*.xml
+        	classpath*:o2p-web-comm-spring.xml
+        	classpath*:o2p-session-spring.xml
+        </param-value>
+  </context-param>
+  <servlet>
+    <servlet-name>spring</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>classpath*:spring/o2p-service-migration-*.xml</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>spring</servlet-name>
+    <url-pattern>*.do</url-pattern>
+  </servlet-mapping>
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+  
+  
+  	<filter>
+		<description>UserName Filter</description>
+		<filter-name>UserNameFilter</filter-name>
+		<filter-class>com.ailk.eaap.o2p.common.interceptor.UserNameFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>UserNameFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	<filter>
+		<description>O2pSessionRepositoryFilter</description>
+		<filter-name>O2pSessionRepositoryFilter</filter-name>
+		<filter-class>com.asiainfo.integration.o2p.session.web.sso.SsoSessionRepositoryFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>O2pSessionRepositoryFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+  
+  
+  <!-- sso单点登录部分的过滤器 -->
+	<filter>
+		<filter-name>SSOFilter</filter-name>
+		<filter-class>com.asiainfo.portal.framework.external.PortalFirstFilter</filter-class>
+		<!--此项配置需为空-->
+		<init-param>
+			<param-name>portal-servername</param-name>
+			<param-value></param-value>
+		</init-param>
+		<!--业务系统实现自身会话保持的实现类-->
+		<init-param>
+			<param-name>impl-classname</param-name>
+			<param-value>com.asiainfo.integration.o2p.sso.SSOPopedomImpl</param-value>
+		</init-param>
+		<init-param>
+			<param-name>4a-servername</param-name>
+			<param-value></param-value>
+		</init-param>
+		<init-param>
+			<param-name>ALLOWPATH</param-name>
+			<param-value>*.jpg;*.gif;*.swf;*.js;*.tld;/webframe/common/*;/jsv2/*;/secframe/common/common.js</param-value>
+		</init-param>
+		<init-param>
+			<param-name>crm-redirectUrl</param-name>
+			<param-value></param-value>
+		</init-param>
+		<init-param>
+			<param-name>resKey</param-name>
+			<param-value>124000</param-value>
+		</init-param>
+		<init-param>
+			<param-name>active-method</param-name>
+			<param-value>post</param-value>
+		</init-param>
+		<init-param>
+			<param-name>cookie-domain</param-name>
+			<param-value>telenor.ai</param-value>
+		</init-param>
+		<init-param>
+			<param-name>ISLOG</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
+			<param-name>is-activedirectory</param-name>
+			<param-value>false</param-value>
+		</init-param>
+		<!-- HUB地址-->
+		<init-param>
+		<param-name>portal-servername-getstatus</param-name>
+		<param-value>http://bj.hub.crm.veris7.ai:32000</param-value>
+		</init-param>
+		<!--CRM7.0登录首页地址-->
+		<init-param>
+			<param-name>portal-servername-redirect</param-name>
+			<param-value>http://bj.web.crm.veris7.ai:30051/ARIESRES/crm-bj/agentview/login.html</param-value>
+		</init-param>
+		<!--authframe的servlet前缀，不配置则默认是“auth”-->
+		<init-param>
+			<param-name>hub_context</param-name>
+			<param-value>auth</param-value>
+		</init-param>
+	</filter>
+	 <filter-mapping>
+	    <filter-name>SSOFilter</filter-name>
+	    <url-pattern>/*</url-pattern>
+     </filter-mapping>
+  	 <servlet>
+		<servlet-name>SSOLogout</servlet-name>
+		<servlet-class>com.asiainfo.portal.framework.external.LogoutServlet</servlet-class>
+	 </servlet>
+	 <servlet-mapping>
+		<servlet-name>SSOLogout</servlet-name>
+		<url-pattern>/sso/logout</url-pattern>
+	 </servlet-mapping>
+	 
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+  
+  	<error-page>
+		<error-code>404</error-code>
+		<location>/404.htm</location>
+	</error-page>
+
+	<error-page>
+		<error-code>500</error-code>
+		<location>/500.htm</location>
+	</error-page>
+  
+</web-app>
